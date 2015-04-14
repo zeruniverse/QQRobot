@@ -5,7 +5,8 @@ QQ小黄鸡VPS挂机版
 登陆时采用QQ安全中心的二维码做为登陆条件, 不需要在程序里输入QQ号码及QQ密码。
 
 ##如何使用
-+ 将QQBot.py第582至586行更改为需要关注的群群号
++ 从http://www.tuling123.com/openapi/申请一个API KEY， 贴到```QQBot.py```的第34行
++ 修改groupfollow.txt,群号用逗号隔开
 + ```nohup python2 QQBot.py >qbot.log&```
 + ```ls```
 + 若出现v.jpg则用QQ安全中心扫描，否则继续```ls```。
@@ -24,14 +25,10 @@ QQ小黄鸡VPS挂机版
 
 
 ##TODO
-+ 从文件中加载群号，避免每次改代码
-+ ~~添加一些小黄鸡默认回复~~ 使用图灵机器人API(http://www.tuling123.com/)
-+ 群聊中被@的处理
+
 + 限制发言频率防止封号
 + 私聊学习/回复，与群聊统一
-+ 将所有学习统一成一个库
-+ 移除follow功能
-+ 将所有输出全部转移至LOG文件 (Print -> LOG)
++ 私聊邮件提醒
 
 
 
