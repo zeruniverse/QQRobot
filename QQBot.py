@@ -392,10 +392,10 @@ class pmchat_thread(threading.Thread):
             logging.info("PM get info from AI: "+ipContent)
             paraf={ 'userid' : str(self.tqq), 'key' : tulingkey, 'info' : ipContent}
             info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf)))
-            if info["code"] in {40001, 40003, 40004}:
+            if info["code"] in [40001, 40003, 40004]:
                 self.reply("我今天累了，不聊了")
                 logging.warning("Reach max AI call")
-            elif info["code"] in {40002, 40005, 40006, 40007}:
+            elif info["code"] in [40002, 40005, 40006, 40007]:
                 self.reply("我遇到了一点问题，请稍后@我")
                 logging.warning("PM AI return error, code:"+str(info["code"]))
             else:
@@ -555,10 +555,10 @@ class group_thread(threading.Thread):
                 paraf={ 'userid' : usr+'g', 'key' : tulingkey, 'info' : str(match.group(2)).decode('UTF-8')}
                 
                 info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf)))
-                if info["code"] in {40001, 40003, 40004}:
+                if info["code"] in [40001, 40003, 40004]:
                     self.reply("我今天累了，不聊了")
                     logging.warning("Reach max AI call")
-                elif info["code"] in {40002, 40005, 40006, 40007}:
+                elif info["code"] in [40002, 40005, 40006, 40007]:
                     self.reply("我遇到了一点问题，请稍后@我")
                     logging.warning("AI return error, code:"+str(info["code"]))
                 else:
