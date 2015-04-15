@@ -31,7 +31,7 @@ Referer = 'http://d.web2.qq.com/proxy.html?v=20130916001&callback=1&id=2'
 SmartQQUrl = 'http://w.qq.com/login.html'
 VFWebQQ = ''
 AdminQQ = '0'
-tulingkey='INPUT YOUR KEY HERE'
+tulingkey='KEY'
 
 initTime = time.time()
 
@@ -85,10 +85,6 @@ def uin_to_account(tuin):
 
     logging.info("Now FriendList:" + str(FriendList))
     return FriendList[tuin]
-
-
-global GroupWatchList
-
 
 
 def msg_handler(msgObj):
@@ -311,9 +307,7 @@ class check_msg(threading.Thread):
 
     def run(self):
         global PTWebQQ
-
         E = 0
-
         # 心跳包轮询
         while 1:
             if E > 5:
@@ -345,7 +339,6 @@ class check_msg(threading.Thread):
                 E = 0
                 continue
 
-            # 收到消息
             if ret['retcode'] == 0:
                 # 信息分发
                 msg_handler(ret['result'])
@@ -395,24 +388,22 @@ class pmchat_thread(threading.Thread):
         logging.info("Reply to " + str(self.tqq) + ":" + str(content))
 
     def push(self, ipContent):
-		try:
+        try:
             logging.info("PM get info from AI: "+ipContent)
-			
-			paraf={ 'userid' : str(self.tqq), 'key' : tulingkey, 'info' : ipContent}
-				
-			info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(f)))
-			if info["code"] in {40001, 40003, 40004}:
-				self.reply("我今天累了，不聊了")
-				logging.warning("Reach max AI call")
-			elif info["code"] in {40002, 40005, 40006, 40007}:
-				self.reply("我遇到了一点问题，请稍后@我")
-				logging.warning("PM AI return error, code:"+str(info["code"]))
-			else:
-				self.reply(info["text"])
-				logging.info("PM AI reply: "+str(info["text"]))
+            paraf={ 'userid' : str(self.tqq), 'key' : tulingkey, 'info' : ipContent}
+            info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(f)))
+            if info["code"] in {40001, 40003, 40004}:
+                self.reply("我今天累了，不聊了")
+                logging.warning("Reach max AI call")
+            elif info["code"] in {40002, 40005, 40006, 40007}:
+                self.reply("我遇到了一点问题，请稍后@我")
+                logging.warning("PM AI return error, code:"+str(info["code"]))
+            else:
+                self.reply(info["text"])
+                logging.info("PM AI reply: "+str(info["text"]))
             return True
-		except:
-			pass
+        except:
+            pass
         return False
         
 
@@ -486,7 +477,7 @@ class group_thread(threading.Thread):
                 #         if not self.repeat(content):
                 #             if not self.callout(content):
                 #                 pass
-				if self.callout(send_uin, content):
+                if self.callout(send_uin, content):
                     return
                 if self.follow(send_uin, content):
                     return
@@ -555,29 +546,29 @@ class group_thread(threading.Thread):
             logging.info("读取存档出错:"+e)
 
     def callout(self, send_uin, content):
-		matchs='@小黄鸡'.encode('utf8')
-		matchs='ur\'^( ?'+s+' ?)(.+)'
-		pattern = re.compile(matchs)
+        matchs='@小黄鸡'.encode('utf8')
+        matchs='ur\'^( ?'+s+' ?)(.+)'
+        pattern = re.compile(matchs)
         match = pattern.match(content)
-		try:
+        try:
             if match:
-				logging.info("get info from AI: "+str(match.group(1)).decode('UTF-8'))
-				usr = str(uin_to_account(send_uin))
-				paraf={ 'userid' : usr+'g', 'key' : tulingkey, 'info' : str(match.group(1)).decode('UTF-8')}
-				
-				info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(f)))
-				if info["code"] in {40001, 40003, 40004}:
-					self.reply("我今天累了，不聊了")
-					logging.warning("Reach max AI call")
-				elif info["code"] in {40002, 40005, 40006, 40007}:
-					self.reply("我遇到了一点问题，请稍后@我")
-					logging.warning("AI return error, code:"+str(info["code"]))
-				else:
-					self.reply(info["text"])
-					logging.info("AI reply: "+str(info["text"]))
-				return True
-		except:
-			pass
+                logging.info("get info from AI: "+str(match.group(1)).decode('UTF-8'))
+                usr = str(uin_to_account(send_uin))
+                paraf={ 'userid' : usr+'g', 'key' : tulingkey, 'info' : str(match.group(1)).decode('UTF-8')}
+                
+                info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(f)))
+                if info["code"] in {40001, 40003, 40004}:
+                    self.reply("我今天累了，不聊了")
+                    logging.warning("Reach max AI call")
+                elif info["code"] in {40002, 40005, 40006, 40007}:
+                    self.reply("我遇到了一点问题，请稍后@我")
+                    logging.warning("AI return error, code:"+str(info["code"]))
+                else:
+                    self.reply(info["text"])
+                    logging.info("AI reply: "+str(info["text"]))
+                return True
+        except:
+            pass
         return False
 
 
@@ -597,25 +588,22 @@ if __name__ == "__main__":
         pass_time()
         qqLogin = Login(vpath, qq)
     except Exception, e:
-        logging.error(e)
-
+        logging.error(str(e))
+    
     t_check = check_msg()
     t_check.setDaemon(True)
     t_check.start()
-	
-	groupfollow=[]       
-        
-	try:		
-		with open('groupfollow.txt','r') as f:
-		for line in f:
-			groupfollow.append(map(int,line.split(',')))
-	
+    groupfollow = []
+    try:        
+        with open('groupfollow.txt','r') as f:
+            for line in f:
+                groupfollow.append(map(int,line.split(',')))
     except Exception, e:
-            logging.error("读取组存档出错:"+e)
-			
-	for groupl in groupfollow:
-		GroupWatchList.append(str(groupl))
-		
+        logging.error("读取组存档出错:"+str(e))
+            
+    for groupl in groupfollow:
+        GroupWatchList.append(str(groupl))
+        
     while 1:
         if not t_check.isAlive():
             exit(0)
