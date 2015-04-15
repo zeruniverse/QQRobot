@@ -10,3 +10,4 @@ Changelog
 + 私聊从AI网站拉取
 + 群聊写入一个DATABASE
 + 把全部的PRINT输入LOG文件
++ 修改PROTOCOL,去除LOGIN_SIG必要性。即没有获取LOGIN_SIG不报错
