@@ -31,7 +31,7 @@ Referer = 'http://d.web2.qq.com/proxy.html?v=20130916001&callback=1&id=2'
 SmartQQUrl = 'http://w.qq.com/login.html'
 VFWebQQ = ''
 AdminQQ = '0'
-tulingkey='KEY'
+tulingkey=#'YOUR KEY HERE'#
 
 initTime = time.time()
 
@@ -207,7 +207,7 @@ class Login(HttpClient):
         logging.critical("正在获取appid")
         APPID = getReValue(html, r'var g_appid =encodeURIComponent\("(\d+)"\);', 'Get AppId Error', 1)
         logging.critical("正在获取login_sig")
-        sign = getReValue(html, r'var g_login_sig=encodeURIComponent\("(.+?)"\);', 'Get Login Sign Error', 1)
+        sign = getReValue(html, r'var g_login_sig=encodeURIComponent\("(.+?)"\);', 'Get Login Sign Error', 0)
         logging.info('get sign : %s', sign)
         logging.critical("正在获取pt_version")
         JsVer = getReValue(html, r'var g_pt_version=encodeURIComponent\("(\d+)"\);', 'Get g_pt_version Error', 1)
@@ -391,7 +391,7 @@ class pmchat_thread(threading.Thread):
         try:
             logging.info("PM get info from AI: "+ipContent)
             paraf={ 'userid' : str(self.tqq), 'key' : tulingkey, 'info' : ipContent}
-            info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(f)))
+            info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf)))
             if info["code"] in {40001, 40003, 40004}:
                 self.reply("我今天累了，不聊了")
                 logging.warning("Reach max AI call")
@@ -402,8 +402,8 @@ class pmchat_thread(threading.Thread):
                 self.reply(info["text"])
                 logging.info("PM AI reply: "+str(info["text"]))
             return True
-        except:
-            pass
+        except Exception, e:
+            logging.error("ERROR:"+str(e))
         return False
         
 
@@ -430,7 +430,7 @@ class group_thread(threading.Thread):
             self.replyList[key] = [value]
 
         if needreply:
-            self.reply("我记住" + str(key) + "的恢复了")
+            self.reply("我记住" + str(key) + "的回复了")
             self.save()
 
     def delete(self, key, value, needreply=True):
@@ -543,20 +543,18 @@ class group_thread(threading.Thread):
                 if saves:
                     self.replyList = json.loads(saves)
         except Exception, e:
-            logging.info("读取存档出错:"+e)
+            logging.info("读取存档出错:"+str(e))
 
     def callout(self, send_uin, content):
-        matchs='@小黄鸡'.encode('utf8')
-        matchs='ur\'^( ?'+s+' ?)(.+)'
-        pattern = re.compile(matchs)
+        pattern = re.compile(r'^(?:!|！)(ai) (.+)') 
         match = pattern.match(content)
         try:
             if match:
-                logging.info("get info from AI: "+str(match.group(1)).decode('UTF-8'))
+                logging.info("get info from AI: "+str(match.group(2)).decode('UTF-8'))
                 usr = str(uin_to_account(send_uin))
-                paraf={ 'userid' : usr+'g', 'key' : tulingkey, 'info' : str(match.group(1)).decode('UTF-8')}
+                paraf={ 'userid' : usr+'g', 'key' : tulingkey, 'info' : str(match.group(2)).decode('UTF-8')}
                 
-                info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(f)))
+                info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf)))
                 if info["code"] in {40001, 40003, 40004}:
                     self.reply("我今天累了，不聊了")
                     logging.warning("Reach max AI call")
@@ -567,8 +565,8 @@ class group_thread(threading.Thread):
                     self.reply(info["text"])
                     logging.info("AI reply: "+str(info["text"]))
                 return True
-        except:
-            pass
+        except Exception, e:
+            logging.error("ERROR"+str(e))
         return False
 
 
@@ -593,17 +591,15 @@ if __name__ == "__main__":
     t_check = check_msg()
     t_check.setDaemon(True)
     t_check.start()
-    groupfollow = []
     try:        
         with open('groupfollow.txt','r') as f:
             for line in f:
-                groupfollow.append(map(int,line.split(',')))
+                GroupWatchList += line.strip('\n').split(',')
+            logging.info("关注:"+str(GroupWatchList))
     except Exception, e:
         logging.error("读取组存档出错:"+str(e))
             
-    for groupl in groupfollow:
-        GroupWatchList.append(str(groupl))
-        
+                
     while 1:
         if not t_check.isAlive():
             exit(0)
