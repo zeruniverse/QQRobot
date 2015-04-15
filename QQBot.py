@@ -357,7 +357,7 @@ class check_msg(threading.Thread):
         try:
             ret = json.loads(html)
         except Exception as e:
-            logging.error(e)
+            logging.error(str(e))
             logging.critical("Check error occured, retrying.")
             return self.check()
 
