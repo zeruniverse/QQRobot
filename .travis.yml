@@ -2,4 +2,7 @@ language: python
 python:
   - '2.7'
   - '2.6'
-script: py.test -q QQBot.py
+script: 
+  - py.test -q QQBot.py
+  - py.test -q HttpClient.py
+  - nosetests
