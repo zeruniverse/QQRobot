@@ -4,5 +4,3 @@ python:
   - '2.6'
 script: 
   - py.test -q QQBot.py
-  - py.test -q HttpClient.py
-  - nosetests
