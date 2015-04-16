@@ -28,3 +28,8 @@ Changelog
         )
         rsp = HttpClient_Ist.Post(reqURL, data, Referer)         
 ```		
+  
+##2015-04-15
++ 加入消息ID核对，避免重复处理私聊
++ 替换AI的换行符与<主人>，使其对应QQ协议
++ 优化线程管理
