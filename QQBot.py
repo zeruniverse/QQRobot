@@ -443,7 +443,9 @@ class pmchat_thread(threading.Thread):
         try:
             logging.info("PM get info from AI: "+ipContent)
             paraf={ 'userid' : str(self.tqq), 'key' : tulingkey, 'info' : ipContent}
-            info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf)))
+            info = HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf))
+            logging.info("AI REPLY:"+str(info))
+            info = json.loads(info)
             if info["code"] in [40001, 40003, 40004]:
                 self.reply("我今天累了，不聊了")
                 logging.warning("Reach max AI call")
@@ -451,7 +453,7 @@ class pmchat_thread(threading.Thread):
                 self.reply("我遇到了一点问题，请稍后@我")
                 logging.warning("PM AI return error, code:"+str(info["code"]))
             else:
-                rpy = info["text"].replace('<主人>','你').replace('<br>','\n')
+                rpy = str(info["text"]).replace('<主人>','你').replace('<br>',"\\\\n")
                 self.reply(rpy)
             return True
         except Exception, e:
@@ -606,7 +608,9 @@ class group_thread(threading.Thread):
                 usr = str(uin_to_account(send_uin))
                 paraf={ 'userid' : usr+'g', 'key' : tulingkey, 'info' : str(match.group(2)).decode('UTF-8')}
                 
-                info = json.loads(HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf)))
+                info = HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf))
+                logging.info("AI REPLY:"+str(info))
+                info = json.loads(info)
                 if info["code"] in [40001, 40003, 40004]:
                     self.reply("我今天累了，不聊了")
                     logging.warning("Reach max AI call")
@@ -614,8 +618,7 @@ class group_thread(threading.Thread):
                     self.reply("我遇到了一点问题，请稍后@我")
                     logging.warning("AI return error, code:"+str(info["code"]))
                 else:
-                    self.reply(info["text"].replace('<主人>','你').replace('<br>','\n'))
-                    logging.info("AI reply: "+str(info["text"]))
+                    self.reply(str(info["text"]).replace('<主人>','你').replace('<br>','\\\\n'))
                 return True
         except Exception, e:
             logging.error("ERROR"+str(e))
