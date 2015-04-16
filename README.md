@@ -36,11 +36,4 @@ QQ小黄鸡VPS挂机版
 + 解决AI回复的<主人>替换，需要拉取昵称
 + 私聊留言邮件提醒
 
-===========
-临时对话机制：
-临时对话需要参数group_sig,POST地址为http://d.web2.qq.com/channel/send_sess_msg2
-参数为：
-好友聊天+group_sig+service_type
 
-Service_type: 讨论组来源为1，群来源为0。
-Group_sig:应该可以从接收消息处获取。也可以直接从http://d.web2.qq.com/channel/get_c2cmsg_sig2获取。考虑到小黄鸡只需要回复，故只需要接收消息时获取即可。（未验证）
