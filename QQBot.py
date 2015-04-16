@@ -418,7 +418,8 @@ class pmchat_thread(threading.Thread):
         self.group_sig=group_sig
         self.service_type=service_type
         self.tqq = uin_to_account(tuin)
-        self.lastcheck = time.time()    
+        self.lastcheck = time.time()
+        logging.info("私聊线程生成，私聊对象："+str(self.tqq))
     def check(self):
         self.lastcheck = time.time()
     def run(self):
