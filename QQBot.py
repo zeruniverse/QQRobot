@@ -95,12 +95,13 @@ def msg_handler(msgObj):
         if msgType == 'message' or msgType == 'sess_message':  # 私聊 or 临时对话
             txt = combine_msg(msg['value']['content'])
             tuin = msg['value']['from_uin']
+            msg_id = msg['value']['msg_id2']
             from_account = uin_to_account(tuin)
 
             # print "{0}:{1}".format(from_account, txt)
             targetThread = thread_exist(from_account)
             if targetThread:
-                targetThread.push(txt)
+                targetThread.push(txt, msg_id)
             else:
                 try:
                     service_type = 0
@@ -123,7 +124,7 @@ def msg_handler(msgObj):
                     tmpThread = pmchat_thread(tuin,isSess,group_sig,service_type)
                     tmpThread.start()
                     ThreadList.append(tmpThread)
-                    tmpThread.push(txt)
+                    tmpThread.push(txt,msg_id)
                 except Exception, e:
                     info("error"+str(e))
 
@@ -419,6 +420,7 @@ class pmchat_thread(threading.Thread):
         self.service_type=service_type
         self.tqq = uin_to_account(tuin)
         self.lastcheck = time.time()
+        self.lastseq=0
         logging.info("私聊线程生成，私聊对象："+str(self.tqq))
     def check(self):
         self.lastcheck = time.time()
@@ -432,7 +434,12 @@ class pmchat_thread(threading.Thread):
         send_msg(self.tuin, str(content), self.isSess, self.group_sig, self.service_type)
         logging.info("Reply to " + str(self.tqq) + ":" + str(content))
 
-    def push(self, ipContent):
+    def push(self, ipContent, seq):
+        if seq == self.lastseq:
+            return True
+        else:
+            self.lastseq=seq
+
         try:
             logging.info("PM get info from AI: "+ipContent)
             paraf={ 'userid' : str(self.tqq), 'key' : tulingkey, 'info' : ipContent}
@@ -444,8 +451,8 @@ class pmchat_thread(threading.Thread):
                 self.reply("我遇到了一点问题，请稍后@我")
                 logging.warning("PM AI return error, code:"+str(info["code"]))
             else:
-                self.reply(info["text"])
-                logging.info("PM AI reply: "+str(info["text"]))
+                rpy = info["text"].replace('<主人>','你').replace('<br>','\n')
+                self.reply(rpy)
             return True
         except Exception, e:
             logging.error("ERROR:"+str(e))
@@ -607,7 +614,7 @@ class group_thread(threading.Thread):
                     self.reply("我遇到了一点问题，请稍后@我")
                     logging.warning("AI return error, code:"+str(info["code"]))
                 else:
-                    self.reply(info["text"])
+                    self.reply(info["text"].replace('<主人>','你').replace('<br>','\n'))
                     logging.info("AI reply: "+str(info["text"]))
                 return True
         except Exception, e:
