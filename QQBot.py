@@ -31,7 +31,7 @@ Referer = 'http://d.web2.qq.com/proxy.html?v=20130916001&callback=1&id=2'
 SmartQQUrl = 'http://w.qq.com/login.html'
 VFWebQQ = ''
 AdminQQ = '0'
-tulingkey=#'YOUR KEY HERE'#
+tulingkey='#YOUR KEY HERE#'
 
 initTime = time.time()
 
