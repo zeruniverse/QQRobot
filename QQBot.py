@@ -214,8 +214,12 @@ def send_msg(tuin, content, isSess, group_sig, service_type):
 
 def thread_exist(tqq):
     for t in ThreadList:
-        if t.tqq == tqq:
-            return t
+        if t.isAlive():
+            if t.tqq == tqq:
+                t.check()
+                return t
+        else:
+            ThreadList.remove(t)
     return False
 
 
@@ -405,7 +409,6 @@ class pmchat_thread(threading.Thread):
 
     
     # con = threading.Condition()
-    stage = 0
     # newIp = ''
 
     def __init__(self, tuin, isSess, group_sig, service_type):
@@ -415,13 +418,14 @@ class pmchat_thread(threading.Thread):
         self.group_sig=group_sig
         self.service_type=service_type
         self.tqq = uin_to_account(tuin)
-        
-        stage = 0
-
+        self.lastcheck = time.time()    
+    def check(self):
+        self.lastcheck = time.time()
     def run(self):
         while 1:
-            self.stage = 0
-            time.sleep(1800)
+            time.sleep(300)
+            if time.time() - self.lastcheck > 300:
+                break
 
     def reply(self, content):
         send_msg(self.tuin, str(content), self.isSess, self.group_sig, self.service_type)
@@ -640,6 +644,4 @@ if __name__ == "__main__":
         logging.error("读取组存档出错:"+str(e))
             
                 
-    while 1:
-        if not t_check.isAlive():
-            exit(0)
+    t_check.join()
