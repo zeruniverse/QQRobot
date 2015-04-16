@@ -102,10 +102,30 @@ def msg_handler(msgObj):
             if targetThread:
                 targetThread.push(txt)
             else:
-                tmpThread = pmchat_thread(tuin)
-                tmpThread.start()
-                ThreadList.append(tmpThread)
-                tmpThread.push(txt)
+                try:
+                    service_type = 0
+                    isSess = 0
+                    group_sig = ''
+                    if msgType == 'sess_message':
+                        isSess = 1
+                        service_type = msg['value']['service_type']
+                        myid = msg['value']['id'] 
+                        ts = time.time()
+                        while ts < 1000000000000:
+                            ts = ts * 10
+                        ts = int(ts)
+                        info = json.loads(HttpClient_Ist.Get('http://d.web2.qq.com/channel/get_c2cmsg_sig2?id={0}&to_uin={1}&clientid={2}&psessionid={3}&service_type={4}&t={5}'.format(myid, tuin, ClientID, PSessionID, service_type, ts), Referer))
+                        logging.info("Get group sig:" + str(info))
+                        if info['retcode'] != 0:
+                            raise ValueError, info
+                        info = info['result']
+                        group_sig = info['value']
+                    tmpThread = pmchat_thread(tuin,isSess,group_sig,service_type)
+                    tmpThread.start()
+                    ThreadList.append(tmpThread)
+                    tmpThread.push(txt)
+                except Exception, e:
+                    info("error"+str(e))
 
             # print "{0}:{1}".format(self.FriendList.get(tuin, 0), txt)
 
@@ -163,14 +183,31 @@ def combine_msg(content):
     return msgTXT
 
 
-def send_msg(tuin, content):
-    reqURL = "http://d.web2.qq.com/channel/send_buddy_msg2"
-    data = (
-        ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}"}}'.format(tuin, ClientID, msgId, PSessionID, str(content))),
-        ('clientid', ClientID),
-        ('psessionid', PSessionID)
-    )
-    rsp = HttpClient_Ist.Post(reqURL, data, Referer)
+def send_msg(tuin, content, isSess, group_sig, service_type):
+    if isSess == 0:
+        reqURL = "http://d.web2.qq.com/channel/send_buddy_msg2"
+        data = (
+            ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}"}}'.format(tuin, ClientID, msgId, PSessionID, str(content))),
+            ('clientid', ClientID),
+            ('psessionid', PSessionID)
+        )
+        rsp = HttpClient_Ist.Post(reqURL, data, Referer)
+        rspp = json.loads(rsp)
+        if rspp['retcode']!= 0:
+            logging.error("reply pmchat error"+str(rspp['retcode']))
+    else:
+        reqURL = "http://d.web2.qq.com/channel/send_sess_msg2"
+        data = (
+            ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}", "group_sig":"{5}", "service_type":{6}}}'.format(tuin, ClientID, msgId, PSessionID, str(content), group_sig, service_type)),
+            ('clientid', ClientID),
+            ('psessionid', PSessionID),
+            ('group_sig', group_sig),
+            ('service_type',service_type)
+        )
+        rsp = HttpClient_Ist.Post(reqURL, data, Referer)
+        rspp = json.loads(rsp)
+        if rspp['retcode']!= 0:
+            logging.error("reply temp pmchat error"+str(rspp['retcode']))
 
     return rsp
 
@@ -371,9 +408,12 @@ class pmchat_thread(threading.Thread):
     stage = 0
     # newIp = ''
 
-    def __init__(self, tuin):
+    def __init__(self, tuin, isSess, group_sig, service_type):
         threading.Thread.__init__(self)
         self.tuin = tuin
+        self.isSess = isSess
+        self.group_sig=group_sig
+        self.service_type=service_type
         self.tqq = uin_to_account(tuin)
         
         stage = 0
@@ -384,7 +424,7 @@ class pmchat_thread(threading.Thread):
             time.sleep(1800)
 
     def reply(self, content):
-        send_msg(self.tuin, str(content))
+        send_msg(self.tuin, str(content), self.isSess, self.group_sig, self.service_type)
         logging.info("Reply to " + str(self.tqq) + ":" + str(content))
 
     def push(self, ipContent):
