@@ -476,6 +476,7 @@ class group_thread(threading.Thread):
         self.guin = guin
         self.gid = GroupList[guin]
         self.load()
+        self.lastreplytime=0
 
     def learn(self, key, value, needreply=True):
         if key in self.replyList:
@@ -499,6 +500,10 @@ class group_thread(threading.Thread):
                 self.reply("没找到你说的那句话哦")
 
     def reply(self, content):
+        if time.time() - self.lastreplytime < 3.0:
+            logging.info("REPLY TOO FAST, ABANDON："+content)
+            return False
+        self.lastreplytime = time.time()
         reqURL = "http://d.web2.qq.com/channel/send_qun_msg2"
         data = (
             ('r', '{{"group_uin":{0}, "face":564,"content":"[\\"{4}\\",[\\"font\\",{{\\"name\\":\\"Arial\\",\\"size\\":\\"10\\",\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}}]]","clientid":"{1}","msg_id":{2},"psessionid":"{3}"}}'.format(self.guin, ClientID, msgId, PSessionID, content.replace("\\", "\\\\\\\\"))),
@@ -507,9 +512,13 @@ class group_thread(threading.Thread):
         )
         logging.info("Reply package: " + str(data))
         rsp = HttpClient_Ist.Post(reqURL, data, Referer)
-        if rsp:
-            
-            logging.info("[Reply to group " + str(self.gid) + "]:" + str(content))
+        try:
+            rspp = json.loads(rsp)
+            if rspp['retcode'] == 0:         
+                logging.info("[Reply to group " + str(self.gid) + "]:" + str(content))
+                return True
+        except:
+            logging.error("[Fail to reply group " + str(self.gid)+ "]:" + str(rsp))
         return rsp
 
     def handle(self, send_uin, content, seq):
