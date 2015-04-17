@@ -518,7 +518,8 @@ class group_thread(threading.Thread):
                 logging.info("[Reply to group " + str(self.gid) + "]:" + str(content))
                 return True
         except:
-            logging.error("[Fail to reply group " + str(self.gid)+ "]:" + str(rsp))
+            pass
+        logging.error("[Fail to reply group " + str(self.gid)+ "]:" + str(rsp))
         return rsp
 
     def handle(self, send_uin, content, seq):
