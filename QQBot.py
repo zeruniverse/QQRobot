@@ -426,7 +426,7 @@ class pmchat_thread(threading.Thread):
         self.lastcheck = time.time()
     def run(self):
         while 1:
-            time.sleep(300)
+            time.sleep(199)
             if time.time() - self.lastcheck > 300:
                 break
 
