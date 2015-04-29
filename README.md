@@ -3,7 +3,7 @@ QQ小黄鸡VPS挂机版
 [![Build Status](https://travis-ci.org/zeruniverse/QQRobot.svg?branch=master)](https://travis-ci.org/zeruniverse/QQRobot)  
 ***该项目修改自[SmartQQBOT](https://github.com/Yinzo/SmartQQBot)这一项目***，支持在VPS下nohup命令挂机。QQ协议说明请参考原项目。
 
-登陆时采用QQ安全中心的二维码做为登陆条件, 不需要在程序里输入QQ号码及QQ密码。  
+登陆时采用QQ安全中心的二维码做为登陆条件, 不需要在程序里输入QQ号码及QQ密码。QQ自动回复私聊（无群聊功能）版本请看[这里](https://github.com/zeruniverse/QQParking)  
   
 由于第一次不知道如何配置travis-ci导致了大量垃圾commit...请忽略...  
 
@@ -30,4 +30,3 @@ QQ小黄鸡VPS挂机版
 + 群聊复读功能，检测到群聊中***连续两个***回复内容相同，将自动复读该内容1次。
 
 + 群聊关注功能，使用命令```!follow qq号```可以使机器人复读此人所有发言（除命令外）使用命令```!unfollow qq号```解除关注。qq号处可使用"me"来快速关注与解除关注自己，例：```!follow me```
-
