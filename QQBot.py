@@ -188,7 +188,7 @@ def send_msg(tuin, content, isSess, group_sig, service_type):
     if isSess == 0:
         reqURL = "http://d.web2.qq.com/channel/send_buddy_msg2"
         data = (
-            ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}"}}'.format(tuin, ClientID, msgId, PSessionID, str(content))),
+            ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}"}}'.format(tuin, ClientID, msgId, PSessionID, str(content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t")).decode("utf-8"))),
             ('clientid', ClientID),
             ('psessionid', PSessionID)
         )
@@ -199,7 +199,7 @@ def send_msg(tuin, content, isSess, group_sig, service_type):
     else:
         reqURL = "http://d.web2.qq.com/channel/send_sess_msg2"
         data = (
-            ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}", "group_sig":"{5}", "service_type":{6}}}'.format(tuin, ClientID, msgId, PSessionID, str(content), group_sig, service_type)),
+            ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}", "group_sig":"{5}", "service_type":{6}}}'.format(tuin, ClientID, msgId, PSessionID, str(content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t")).decode("utf-8"), group_sig, service_type)),
             ('clientid', ClientID),
             ('psessionid', PSessionID),
             ('group_sig', group_sig),
@@ -453,7 +453,7 @@ class pmchat_thread(threading.Thread):
                 self.reply("我遇到了一点问题，请稍后@我")
                 logging.warning("PM AI return error, code:"+str(info["code"]))
             else:
-                rpy = str(info["text"]).replace('<主人>','你').replace('<br>',"\\\\n")
+                rpy = str(info["text"]).replace('<主人>','你').replace('<br>',"\n")
                 self.reply(rpy)
             return True
         except Exception, e:
@@ -506,7 +506,7 @@ class group_thread(threading.Thread):
         self.lastreplytime = time.time()
         reqURL = "http://d.web2.qq.com/channel/send_qun_msg2"
         data = (
-            ('r', '{{"group_uin":{0}, "face":564,"content":"[\\"{4}\\",[\\"font\\",{{\\"name\\":\\"Arial\\",\\"size\\":\\"10\\",\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}}]]","clientid":"{1}","msg_id":{2},"psessionid":"{3}"}}'.format(self.guin, ClientID, msgId, PSessionID, content.replace("\\", "\\\\\\\\"))),
+            ('r', '{{"group_uin":{0}, "face":564,"content":"[\\"{4}\\",[\\"font\\",{{\\"name\\":\\"Arial\\",\\"size\\":\\"10\\",\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}}]]","clientid":"{1}","msg_id":{2},"psessionid":"{3}"}}'.format(self.guin, ClientID, msgId, PSessionID, str(content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t")).decode("utf-8"))),
             ('clientid', ClientID),
             ('psessionid', PSessionID)
         )
@@ -630,7 +630,7 @@ class group_thread(threading.Thread):
                     self.reply("我遇到了一点问题，请稍后@我")
                     logging.warning("AI return error, code:"+str(info["code"]))
                 else:
-                    self.reply(str(info["text"]).replace('<主人>','你').replace('<br>',"\\\\n"))
+                    self.reply(str(info["text"]).replace('<主人>','你').replace('<br>',"\n"))
                 return True
         except Exception, e:
             logging.error("ERROR"+str(e))
@@ -642,7 +642,7 @@ class group_thread(threading.Thread):
         try:
             if match:
                 logging.info("output about info")
-                info="小黄鸡3.0 By Jeffery, 源代码：(github.com/zeruniverse/QQRobot)\\\\n使用语法： （按优先级排序，若同时触发则只按优先级最高的类型回复。注意所有!均为半角符号，即英文!）\\\\n\\\\n1.帮助（关于）,输入!about，样例：\\\\n!about\\\\n\\\\n2.智能鸡：输入!ai (空格)+问题，小黄鸡自动回复，举例：\\\\n!ai 你是谁？\\\\n\\\\n3.随从鸡：输入!follow QQ号，小黄鸡会重复发送该QQ号所有发送内容，如对自己使用可以直接使用!follow me，举例：\\\\n!follow 123456789\\\\n!follow me\\\\n取消复读则输入!unfollow QQ(或me),举例：\\\\n!unfollow 123456789\\\\n!unfollow me\\\\n\\\\n4.学习鸡：使用!learn {A}{B}命令让小黄鸡学习，以后有人说A的时候小黄鸡会自动说B。!learn后面有空格，全部符号均为半角（英文），例如\\\\n!learn {你是谁}{我是小黄鸡}\\\\n删除该记录则\\\\n!delete {你是谁}{我是小黄鸡}\\\\n\\\\n5.复读鸡：当群里连续两次出现同样信息时复读一遍\\\\n\\\\n\\\\n私戳小黄鸡可以私聊，私聊无格式，全部当智能鸡模式处理。"
+                info="小黄鸡3.0 By Jeffery, 源代码：(github.com/zeruniverse/QQRobot)\n使用语法： （按优先级排序，若同时触发则只按优先级最高的类型回复。注意所有!均为半角符号，即英文!）\n\n1.帮助（关于）,输入!about，样例：\n!about\n\n2.智能鸡：输入!ai (空格)+问题，小黄鸡自动回复，举例：\n!ai 你是谁？\n\n3.随从鸡：输入!follow QQ号，小黄鸡会重复发送该QQ号所有发送内容，如对自己使用可以直接使用!follow me，举例：\n!follow 123456789\n!follow me\n取消复读则输入!unfollow QQ(或me),举例：\n!unfollow 123456789\n!unfollow me\n\n4.学习鸡：使用!learn {A}{B}命令让小黄鸡学习，以后有人说A的时候小黄鸡会自动说B。!learn后面有空格，全部符号均为半角（英文），例如\n!learn {你是谁}{我是小黄鸡}\n删除该记录则\n!delete {你是谁}{我是小黄鸡}\n\n5.复读鸡：当群里连续两次出现同样信息时复读一遍\n\n\n私戳小黄鸡可以私聊，私聊无格式，全部当智能鸡模式处理。"
                 self.reply(info)
                 return True
         except Exception, e:
