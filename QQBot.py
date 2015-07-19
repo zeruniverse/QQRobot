@@ -541,6 +541,8 @@ class group_thread(threading.Thread):
                 #         if not self.repeat(content):
                 #             if not self.callout(content):
                 #                 pass
+                if self.aboutme(content):
+                    return
                 if self.callout(send_uin, content):
                     return
                 if self.follow(send_uin, content):
@@ -628,12 +630,24 @@ class group_thread(threading.Thread):
                     self.reply("我遇到了一点问题，请稍后@我")
                     logging.warning("AI return error, code:"+str(info["code"]))
                 else:
-                    self.reply(str(info["text"]).replace('<主人>','你').replace('<br>','\\\\n'))
+                    self.reply(str(info["text"]).replace('<主人>','你').replace('<br>','\\n'))
                 return True
         except Exception, e:
             logging.error("ERROR"+str(e))
         return False
-
+        
+    def aboutme(self, content):
+        pattern = re.compile(r'^(?:!|！)(about)') 
+        match = pattern.match(content)
+        try:
+            if match:
+                logging.info("output about info")
+                info='小黄鸡3.0 By Jeffery, 源代码：(github.com/zeruniverse/QQRobot)\\n使用语法： （按优先级排序，若同时触发则只按优先级最高的类型回复。注意所有!均为半角符号，即英文!）\\n\\n1.帮助（关于）,输入!about，样例：\\n!about\\n\\n2.智能鸡：输入!ai (空格)+问题，小黄鸡自动回复，举例：\\n!ai 你是谁？\\n\\n3.随从鸡：输入!follow QQ号，小黄鸡会重复发送该QQ号所有发送内容，如对自己使用可以直接使用!follow me，举例：\\n!follow 123456789\\n!follow me\\n取消复读则输入!unfollow QQ(或me),举例：\\n!unfollow 123456789\\n!unfollow me\\n\\n4.学习鸡：使用!learn {A}{B}命令让小黄鸡学习，以后有人说A的时候小黄鸡会自动说B。!learn后面有空格，全部符号均为半角（英文），例如\\n!learn {你是谁}{我是小黄鸡}\\n删除该记录则\\n!delete {你是谁}{我是小黄鸡}\\n\\n5.复读鸡：当群里连续两次出现同样信息时复读一遍\\n\\n\\n私戳小黄鸡可以私聊，私聊无格式，全部当智能鸡模式处理。'
+                self.reply(info)
+                return True
+        except Exception, e:
+            logging.error("ERROR"+str(e))
+        return False
 
 # -----------------
 # 主程序
