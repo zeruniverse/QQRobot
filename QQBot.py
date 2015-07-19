@@ -126,7 +126,7 @@ def msg_handler(msgObj):
                     ThreadList.append(tmpThread)
                     tmpThread.push(txt,msg_id)
                 except Exception, e:
-                    info("error"+str(e))
+                    logging.info("error"+str(e))
 
             # print "{0}:{1}".format(self.FriendList.get(tuin, 0), txt)
 
