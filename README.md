@@ -8,7 +8,7 @@ QQ小黄鸡VPS挂机版
 由于第一次不知道如何配置travis-ci导致了大量垃圾commit...请忽略...  
 
 ##如何使用
-+ 从http://www.tuling123.com/openapi/ 申请一个API KEY(免费，5000次/天)， 贴到```QQBot.py```的第34行
++ 从http://www.tuling123.com/openapi/ 申请一个API KEY(免费，5000次/天)， 贴到```QQBot.py```的第34行 (测试KEY：c7c5abbc9ec9cad3a63bde71d17e3c2c)  
 + 修改groupfollow.txt,将需要小黄鸡回复的群的群号写入(小黄鸡必须为群成员),用逗号隔开
 + ```nohup python2 QQBot.py >qbot.log&```
 + ```ls```
