@@ -313,6 +313,7 @@ class Login(HttpClient):
                 logging.critical("登录失败，正在重试")
 
         if ret['retcode'] != 0:
+            raise ValueError, "Login Retcode="+str(ret['retcode'])
             return
 
         VFWebQQ = ret['result']['vfwebqq']
@@ -421,6 +422,7 @@ class pmchat_thread(threading.Thread):
         self.tqq = uin_to_account(tuin)
         self.lastcheck = time.time()
         self.lastseq=0
+        self.replystreak = 0
         logging.info("私聊线程生成，私聊对象："+str(self.tqq))
     def check(self):
         self.lastcheck = time.time()
@@ -439,8 +441,12 @@ class pmchat_thread(threading.Thread):
             return True
         else:
             self.lastseq=seq
-
+        #防止机器人对聊
+        if self.replystreak>30:
+            self.replystreak = 0
+            return True
         try:
+            self.replystreak = self.replystreak + 1
             logging.info("PM get info from AI: "+ipContent)
             paraf={ 'userid' : str(self.tqq), 'key' : tulingkey, 'info' : ipContent}
             info = HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf))
@@ -685,8 +691,8 @@ if __name__ == "__main__":
         pass_time()
         qqLogin = Login(vpath, qq)
     except Exception, e:
-        logging.error(str(e))
-    
+        logging.critical(str(e))
+        os._exit()
     t_check = check_msg()
     t_check.setDaemon(True)
     t_check.start()
