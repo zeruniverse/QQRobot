@@ -35,7 +35,7 @@ tulingkey=''
 
 initTime = time.time()
 
-
+logging.FileHandler(filename='log.txt', mode='w', encoding="utf-8", delay=False)
 logging.basicConfig(filename='log.txt', level=logging.DEBUG, format='%(asctime)s  %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S')
 
 # -----------------
