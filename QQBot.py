@@ -239,9 +239,11 @@ class Login(HttpClient):
     MaxTryTime = 5
 
     def __init__(self, vpath, qq=0):
-        global APPID, AdminQQ, PTWebQQ, VFWebQQ, PSessionID, msgId
+        global APPID, AdminQQ, PTWebQQ, VFWebQQ, PSessionID, msgId,tulingkey
         self.VPath = vpath  # QRCode保存路径
         AdminQQ = int(qq)
+        f=open('tulingkey.txt','rt')
+        tulingkey=f.readline().replace("\n","").replace("\r","").replace(" ","").replace("\t","")
         logging.critical("正在获取登陆页面")
         self.initUrl = getReValue(self.Get(SmartQQUrl), r'\.src = "(.+?)"', 'Get Login Url Error.', 1)
         html = self.Get(self.initUrl + '0')
@@ -654,7 +656,6 @@ class group_thread(threading.Thread):
 # -----------------
 
 if __name__ == "__main__":
-    global tulingkey
     vpath = './v.jpg'
     qq = 0
     if len(sys.argv) > 1:
@@ -669,8 +670,6 @@ if __name__ == "__main__":
     try:
         pass_time()
         qqLogin = Login(vpath, qq)
-        f=open('tulingkey.txt','rt')
-        tulingkey=f.readline().replace("\n","").replace("\r","").replace(" ","").replace("\t","")
     except Exception, e:
         logging.error(str(e))
         print "Fatal error: Unable to get AI key or fail to login"
