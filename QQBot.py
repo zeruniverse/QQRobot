@@ -31,7 +31,7 @@ Referer = 'http://d.web2.qq.com/proxy.html?v=20130916001&callback=1&id=2'
 SmartQQUrl = 'http://w.qq.com/login.html'
 VFWebQQ = ''
 AdminQQ = '0'
-tulingkey='#YOUR KEY HERE#'
+tulingkey=''
 
 initTime = time.time()
 
@@ -263,7 +263,7 @@ class Login(HttpClient):
         while True:
             T = T + 1
             self.Download('https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(APPID), self.VPath)
-            
+            print "Please scan v.jpg (QR Code) in the folder with QQ or QQ security center in your mobile phone\n"
             logging.info('[{0}] Get QRCode Picture Success.'.format(T))
             
 
@@ -654,19 +654,27 @@ class group_thread(threading.Thread):
 # -----------------
 
 if __name__ == "__main__":
+    global tulingkey
     vpath = './v.jpg'
     qq = 0
     if len(sys.argv) > 1:
         vpath = sys.argv[1]
     if len(sys.argv) > 2:
         qq = sys.argv[2]
-
+    print "QQRobot 3.0 By Jeffery"
+    print "Log files will be recorded to log.txt in the same folder as this executable file"
+    print "Please write all group numbers for groups you want the robot to follow in groupfollow.txt"
+    print "This program can normally run stably for 1.5-2.5 days. Then QQ may ask to login again. When that happens, this program will exit due to fatal error and you should run it again.\n"
+    print "Please wait... Downloading QR Code for login\n"
     try:
         pass_time()
         qqLogin = Login(vpath, qq)
+        f=open('tulingkey.txt','rt')
+        tulingkey=f.readline().replace("\n","").replace("\r","").replace(" ","").replace("\t","")
     except Exception, e:
         logging.error(str(e))
-    
+        print "Fatal error: Unable to get AI key or fail to login"
+        os._exit()
     t_check = check_msg()
     t_check.setDaemon(True)
     t_check.start()
@@ -676,7 +684,5 @@ if __name__ == "__main__":
                 GroupWatchList += line.strip('\n').split(',')
             logging.info("关注:"+str(GroupWatchList))
     except Exception, e:
-        logging.error("读取组存档出错:"+str(e))
-            
-                
+        logging.error("读取组存档出错:"+str(e))          
     t_check.join()
