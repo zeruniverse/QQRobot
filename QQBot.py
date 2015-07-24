@@ -36,7 +36,7 @@ tulingkey=''
 initTime = time.time()
 
 
-logging.basicConfig(filename='log.log', level=logging.DEBUG, format='%(asctime)s  %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S')
+logging.basicConfig(filename='log.txt', level=logging.DEBUG, format='%(asctime)s  %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S')
 
 # -----------------
 # 方法声明
@@ -323,7 +323,7 @@ class Login(HttpClient):
         logging.critical("QQ号：{0} 登陆成功, 用户名：{1}".format(ret['result']['uin'], tmpUserName))
         logging.info('Login success')
         logging.critical("登陆二维码用时" + pass_time() + "秒")
-
+        print "Successfully Login! Now you can just leave the program here alone."
         msgId = int(random.uniform(20000, 50000))
 
 
@@ -667,6 +667,11 @@ if __name__ == "__main__":
     print "Please write all group numbers for groups you want the robot to follow in groupfollow.txt"
     print "This program can normally run stably for 1.5-2.5 days. Then QQ may ask to login again. When that happens, this program will exit due to fatal error and you should run it again.\n"
     print "Please wait... Downloading QR Code for login\n"
+    try:
+        if os.path.exists("./log.txt"):
+            os.remove("./log.txt")
+    except:
+        pass
     try:
         pass_time()
         qqLogin = Login(vpath, qq)
