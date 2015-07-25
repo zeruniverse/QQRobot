@@ -8,6 +8,6 @@ after_script:
   - nohup python QQBot.py >qbot.log&
   - sleep 60s
   - cat qbot.log
-  - cat log.log
+  - cat log.txt
   - ls
   - killall python
