@@ -6,6 +6,10 @@ QQ小黄鸡VPS挂机版
 登陆时采用QQ安全中心的二维码做为登陆条件, 不需要在程序里输入QQ号码及QQ密码。QQ自动回复私聊（无群聊功能）版本请看[这里](https://github.com/zeruniverse/QQParking)  
   
 由于第一次不知道如何配置travis-ci导致了大量垃圾commit...请忽略...  
+   
+**RELEASE**
+3.3 (带预配置文件)：[点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/3.3)  
+WINDOWS EXE 32位: [点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/w1.3)  
 
 ##如何使用
 + 从http://www.tuling123.com/openapi/ 申请一个API KEY(免费，5000次/天)， 贴到```QQBot.py```的第34行 (测试KEY：c7c5abbc9ec9cad3a63bde71d17e3c2c)  
