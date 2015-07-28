@@ -7,7 +7,7 @@ QQ小黄鸡VPS挂机版
   
 由于第一次不知道如何配置travis-ci导致了大量垃圾commit...请忽略...  
    
-**RELEASE**
+**RELEASE**  
 3.3 (带预配置文件)：[点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/3.3)  
 WINDOWS EXE 32位: [点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/w1.3)  
 
