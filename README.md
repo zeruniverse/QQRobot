@@ -2,6 +2,7 @@ QQ小黄鸡VPS挂机版
 =========  
 [![Build Status](https://travis-ci.org/zeruniverse/QQRobot.svg?branch=master)](https://travis-ci.org/zeruniverse/QQRobot)  
 ***该项目修改自[SmartQQBOT](https://github.com/Yinzo/SmartQQBot)这一项目***，支持在VPS下nohup命令挂机。QQ协议说明请参考原项目。  
+已测试运行环境：Python 2.6 & Python 2.7  
   
 This project is a chatting robot in QQ, implemented in Python. The robot uses Artificial Intelligent API to generate response. QQ is a popular instant chatting service in China, which is similar to Facebook Messenger. The robot supports group chatting and private chatting and should be only used for fun.   
   
