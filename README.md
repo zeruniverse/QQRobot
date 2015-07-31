@@ -1,27 +1,36 @@
 QQ小黄鸡VPS挂机版
 =========  
 [![Build Status](https://travis-ci.org/zeruniverse/QQRobot.svg?branch=master)](https://travis-ci.org/zeruniverse/QQRobot)  
-***该项目修改自[SmartQQBOT](https://github.com/Yinzo/SmartQQBot)这一项目***，支持在VPS下nohup命令挂机。QQ协议说明请参考原项目。
-
-登陆时采用QQ安全中心的二维码做为登陆条件, 不需要在程序里输入QQ号码及QQ密码。QQ自动回复私聊（无群聊功能）版本请看[这里](https://github.com/zeruniverse/QQParking)  
+***该项目修改自[SmartQQBOT](https://github.com/Yinzo/SmartQQBot)这一项目***，支持在VPS下nohup命令挂机。QQ协议说明请参考原项目。  
   
-由于第一次不知道如何配置travis-ci导致了大量垃圾commit...请忽略...  
+This project is a chatting robot in QQ, implemented in Python. The robot uses Artificial Intelligent API to generate response. QQ is a popular instant chatting service in China, which is similar to Facebook Messenger.  
+  
+运行群聊示例：  
+![28114336_gmak](https://cloud.githubusercontent.com/assets/4648756/9000724/cee72600-3700-11e5-8980-f30a2a922cf0.png)  
+![28114448_qgqk](https://cloud.githubusercontent.com/assets/4648756/9000731/d9a1140c-3700-11e5-8321-d3c05e00fade.png)  
+![28114510_omhn](https://cloud.githubusercontent.com/assets/4648756/9000735/dd5ea1ae-3700-11e5-839c-19eb0fd0aab0.png)  
+  
+私聊示例：  
+![28114637_s1vj](https://cloud.githubusercontent.com/assets/4648756/9000741/e7d5ebe2-3700-11e5-8859-d55a6cee04e9.png)  
+  
+  
+登陆时采用QQ安全中心的二维码做为登陆条件, 不需要在程序里输入QQ号码及QQ密码。QQ自动回复私聊（无群聊功能）及留言邮件提醒版本请看[这里](https://github.com/zeruniverse/QQParking)    
    
 **RELEASE**  
 3.3 (带预配置文件)：[点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/3.3)  
 WINDOWS EXE 32位: [点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/w1.3)  
 
-##如何使用
+##如何使用  
 + 从http://www.tuling123.com/openapi/ 申请一个API KEY(免费，5000次/天)， 贴到```QQBot.py```的第34行 (测试KEY：c7c5abbc9ec9cad3a63bde71d17e3c2c)  
-+ 修改groupfollow.txt,将需要小黄鸡回复的群的群号写入(小黄鸡必须为群成员),用逗号隔开
++ 修改groupfollow.txt,将需要小黄鸡回复的群的群号写入(小黄鸡必须为群成员),用逗号隔开  
 + ```nohup python2 QQBot.py >qbot.log&```
 + ```ls```
-+ 若出现v.jpg则用QQ安全中心扫描，否则继续```ls```。
-+ ```cat log.log```可以输出运行LOG
-+ 强烈建议使用小号挂小黄鸡，已知QQ会临时封禁机器人的临时对话回复和群回复，原理未知，每次封禁约为10分钟。表现为发送消息返回值retcode 为 0 但其他人无法看到。长时间挂机会导致QQ被冻结错误，QQ安全中心提示发布不良信息
-+ 据反馈此AI平台回复中带有少量广告。。。(如问iphone6价格回复小米799)
-
-
++ 若出现v.jpg则用QQ安全中心扫描，否则继续```ls```  
++ ```cat log.log```可以输出运行LOG  
++ 强烈建议使用小号挂小黄鸡，已知QQ会临时封禁机器人的临时对话回复和群回复，原理未知，每次封禁约为10分钟。表现为发送消息返回值retcode 为 0 但其他人无法看到。长时间挂机会导致QQ被冻结错误，QQ安全中心提示发布不良信息  
++ 据反馈此AI平台回复中带有少量广告。。。(如问iphone6价格回复小米799)  
+  
+  
 ##功能
 <small>注：以下命令皆是在qq中发送，群聊命令发送到所在群中</small>  
 
@@ -35,4 +44,6 @@ WINDOWS EXE 32位: [点击下载](https://github.com/zeruniverse/QQRobot/release
 
 + 群聊复读功能，检测到群聊中***连续两个***回复内容相同，将自动复读该内容1次。
 
-+ 群聊关注功能，使用命令```!follow qq号```可以使机器人复读此人所有发言（除命令外）使用命令```!unfollow qq号```解除关注。qq号处可使用"me"来快速关注与解除关注自己，例：```!follow me```
++ 群聊关注功能，使用命令```!follow qq号```可以使机器人复读此人所有发言（除命令外）使用命令```!unfollow qq号```解除关注。qq号处可使用"me"来快速关注与解除关注自己，例：```!follow me```  
+  
+私聊直接聊天即可，不需要加任何前缀。
