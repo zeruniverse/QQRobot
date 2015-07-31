@@ -16,7 +16,7 @@ This project is a chatting robot in QQ, implemented in Python. The robot uses Ar
   
 登陆时采用QQ安全中心的二维码做为登陆条件, 不需要在程序里输入QQ号码及QQ密码。QQ自动回复私聊（无群聊功能）及留言邮件提醒版本请看[这里](https://github.com/zeruniverse/QQParking)    
    
-**RELEASE**  
+##RELEASE  
 3.3 (带预配置文件)：[点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/3.3)  
 WINDOWS EXE 32位: [点击下载](https://github.com/zeruniverse/QQRobot/releases/tag/w1.3)  
 
