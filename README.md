@@ -4,6 +4,8 @@ QQ小黄鸡VPS挂机版
 ***该项目修改自[SmartQQBOT](https://github.com/Yinzo/SmartQQBot)这一项目***，支持在VPS下nohup命令挂机。QQ协议说明请参考原项目。  
 已测试运行环境：Python 2.6 & Python 2.7  
   
+**请帮忙分析Android QQ协议**：此项目现已稳定，在更新协议前不会有大更新。希望有人能跟我一起搞手机QQ协议，SmartQQ协议稳定性不是很理想。  
+  
 重要：群聊被TX认为是**极度危险**的行为，因此如果账号被怀疑被盗号（异地登陆），群聊消息会发不出去。表现为程序能收到群聊消息，群聊消息发送返回值为发送成功，但其他群成员无法看到您发出的消息。大约登陆10分钟后您会收到QQ提醒提示账号被盗，要求改密码，同时账号被临时冻结。不知为何该程序刚运行时总是被怀疑异地登陆，当您重复解冻3次后（就是改密码），TX基本就不再怀疑您了，一般一次能稳定挂机2-3天。强烈推荐您用小号挂QQ小黄鸡！   
    
 This project is a chatting robot in QQ, implemented in Python. The robot uses Artificial Intelligent API to generate response. QQ is a popular instant chatting service in China, which is similar to Facebook Messenger. The robot supports group chatting and private chatting and should be only used for fun.   
