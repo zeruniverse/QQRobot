@@ -1,8 +1,8 @@
 QQ小黄鸡VPS挂机版
 =========  
-[![Build Status](https://travis-ci.org/zeruniverse/QQRobot.svg?branch=master)](https://travis-ci.org/zeruniverse/QQRobot)  
+[![Build Status](https://travis-ci.org/zeruniverse/QQRobot.svg?branch=master)](https://travis-ci.org/zeruniverse/QQRobot) ![Environment](https://img.shields.io/badge/python-2.6, 2.7-blue.svg)
+![License](https://img.shields.io/github/license/zeruniverse/QQRobot.svg)  
 ***该项目修改自[SmartQQBOT](https://github.com/Yinzo/SmartQQBot)这一项目***，支持在VPS下nohup命令挂机。QQ协议说明请参考原项目。  
-已测试运行环境：Python 2.6 & Python 2.7  
   
 **请帮忙分析Android QQ协议**：此项目现已稳定，在更新协议前不会有大更新。希望有人能跟我一起搞手机QQ协议，SmartQQ协议稳定性不是很理想。  
   
