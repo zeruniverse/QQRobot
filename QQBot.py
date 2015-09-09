@@ -279,6 +279,7 @@ class Login(HttpClient):
 
         logging.info(ret)
         if ret[1] != '0':
+            raise ValueError, "RetCode = "+ret['retcode']
             return
         logging.critical("二维码已扫描，正在登陆")
         pass_time()
