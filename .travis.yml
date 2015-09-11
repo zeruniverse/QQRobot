@@ -6,7 +6,9 @@ script:
   - py.test -q QQBot.py
 after_script:
   - nohup python QQBot.py >qbot.log&
-  - sleep 60s
+  - sleep 500s
+  - echo "still waiting"
+  - sleep 500s
   - cat qbot.log
   - cat log.log
   - ls
