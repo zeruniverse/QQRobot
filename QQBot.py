@@ -247,7 +247,7 @@ class Login(HttpClient):
         html = self.Get(self.initUrl + '0')
 
         logging.critical("正在获取appid")
-        APPID = getReValue(html, r'g_appid\s*=\s*encodeURIComponent\s*\("(\d+)"', 'Get AppId Error', 1)
+        APPID = getReValue(html, r'<input type="hidden" name="aid" value="(\d+)" />', 'Get AppId Error', 1)
         logging.critical("正在获取login_sig")
         sign = getReValue(html, r'g_login_sig\s*=\s*encodeURIComponent\s*\("(.+?)"\)', 'Get Login Sign Error', 0)
         logging.info('get sign : %s', sign)
