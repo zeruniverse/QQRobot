@@ -17,7 +17,7 @@ sys.setdefaultencoding("utf-8")
 
 HttpClient_Ist = HttpClient()
 
-ClientID = int(random.uniform(111111, 888888))
+ClientID = 53999199
 PTWebQQ = ''
 APPID = 0
 msgId = 0
@@ -27,7 +27,7 @@ ThreadList = []
 GroupThreadList = []
 GroupWatchList = []
 PSessionID = ''
-Referer = 'http://d.web2.qq.com/proxy.html?v=20130916001&callback=1&id=2'
+Referer = 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2'
 SmartQQUrl = 'http://w.qq.com/login.html'
 VFWebQQ = ''
 AdminQQ = '0'
@@ -49,6 +49,12 @@ def pass_time():
     initTime = time.time()
     return str(round(rs, 3))
 
+def get_ts():
+    ts = time.time()
+    while ts < 1000000000000:
+        ts = ts * 10
+    ts = int(ts)
+    return ts
 
 def getReValue(html, rex, er, ex):
     v = re.search(rex, html)
@@ -115,7 +121,7 @@ def msg_handler(msgObj):
                         while ts < 1000000000000:
                             ts = ts * 10
                         ts = int(ts)
-                        info = json.loads(HttpClient_Ist.Get('http://d.web2.qq.com/channel/get_c2cmsg_sig2?id={0}&to_uin={1}&clientid={2}&psessionid={3}&service_type={4}&t={5}'.format(myid, tuin, ClientID, PSessionID, service_type, ts), Referer))
+                        info = json.loads(HttpClient_Ist.Get('http://d1.web2.qq.com/channel/get_c2cmsg_sig2?id={0}&to_uin={1}&clientid={2}&psessionid={3}&service_type={4}&t={5}'.format(myid, tuin, ClientID, PSessionID, service_type, ts), Referer))
                         logging.info("Get group sig:" + str(info))
                         if info['retcode'] != 0:
                             raise ValueError, info
@@ -136,7 +142,7 @@ def msg_handler(msgObj):
             #         msgId += 1
 
             # if txt[0:4] == 'exit':
-            #     logging.info(self.Get('http://d.web2.qq.com/channel/logout2?ids=&clientid={0}&psessionid={1}'.format(self.ClientID, self.PSessionID), Referer))
+            #     logging.info(self.Get('http://d1.web2.qq.com/channel/logout2?ids=&clientid={0}&psessionid={1}'.format(self.ClientID, self.PSessionID), Referer))
             #     exit(0)
 
         # 群消息
@@ -186,7 +192,7 @@ def combine_msg(content):
 
 def send_msg(tuin, content, isSess, group_sig, service_type):
     if isSess == 0:
-        reqURL = "http://d.web2.qq.com/channel/send_buddy_msg2"
+        reqURL = "http://d1.web2.qq.com/channel/send_buddy_msg2"
         data = (
             ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}"}}'.format(tuin, ClientID, msgId, PSessionID, str(content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t")).decode("utf-8"))),
             ('clientid', ClientID),
@@ -197,7 +203,7 @@ def send_msg(tuin, content, isSess, group_sig, service_type):
         if rspp['retcode']!= 0:
             logging.error("reply pmchat error"+str(rspp['retcode']))
     else:
-        reqURL = "http://d.web2.qq.com/channel/send_sess_msg2"
+        reqURL = "http://d1.web2.qq.com/channel/send_sess_msg2"
         data = (
             ('r', '{{"to":{0}, "face":594, "content":"[\\"{4}\\", [\\"font\\", {{\\"name\\":\\"Arial\\", \\"size\\":\\"10\\", \\"style\\":[0, 0, 0], \\"color\\":\\"000000\\"}}]]", "clientid":"{1}", "msg_id":{2}, "psessionid":"{3}", "group_sig":"{5}", "service_type":{6}}}'.format(tuin, ClientID, msgId, PSessionID, str(content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t")).decode("utf-8"), group_sig, service_type)),
             ('clientid', ClientID),
@@ -249,13 +255,13 @@ class Login(HttpClient):
         logging.critical("正在获取appid")
         APPID = getReValue(html, r'<input type="hidden" name="aid" value="(\d+)" />', 'Get AppId Error', 1)
         logging.critical("正在获取login_sig")
-        sign = getReValue(html, r'g_login_sig\s*=\s*encodeURIComponent\s*\("(.+?)"\)', 'Get Login Sign Error', 0)
+        sign = getReValue(html, r'g_login_sig\s*=\s*encodeURIComponent\s*\("(.*?)"\)', 'Get Login Sign Error', 0)
         logging.info('get sign : %s', sign)
         logging.critical("正在获取pt_version")
         JsVer = getReValue(html, r'g_pt_version\s*=\s*encodeURIComponent\s*\("(\d+)"\)', 'Get g_pt_version Error', 1)
         logging.info('get g_pt_version : %s', JsVer)
         logging.critical("正在获取mibao_css")
-        MiBaoCss = getReValue(html, r'g_mibao_css\s*=\s*encodeURIComponent\s*\("(.+?)"\)', 'Get g_mibao_css Error', 1)
+        MiBaoCss = getReValue(html, r'g_mibao_css\s*=\s*encodeURIComponent\s*\("(.*?)"\)', 'Get g_mibao_css Error', 1)
         logging.info('get g_mibao_css : %s', sign)
         StarTime = date_to_millis(datetime.datetime.utcnow())
 
@@ -301,23 +307,26 @@ class Login(HttpClient):
 
         logging.info('PTWebQQ: {0}'.format(PTWebQQ))
 
-        LoginError = 1
+        LoginError = 3
         while LoginError > 0:
             try:
-                html = self.Post('http://d.web2.qq.com/channel/login2', {
+                html = self.Post('http://d1.web2.qq.com/channel/login2', {
                     'r': '{{"ptwebqq":"{0}","clientid":{1},"psessionid":"{2}","status":"online"}}'.format(PTWebQQ, ClientID, PSessionID)
                 }, Referer)
                 ret = json.loads(html)
-                LoginError = 0
+                html2 = self.Get("http://s.web2.qq.com/api/getvfwebqq?ptwebqq={0}&clientid={1}&psessionid={2}&t={3}".format(PTWebQQ, ClientID, PSessionID, get_ts()), 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1')
+                logging.info("getvfwebqq html:  " + str(html2))
+                ret2 = json.loads(html2)
+                LoginError = 0				
             except:
-                LoginError += 1
+                LoginError -= 1
                 logging.critical("登录失败，正在重试")
 
-        if ret['retcode'] != 0:
+        if ret['retcode'] != 0 or ret2['retcode'] != 0:
             raise ValueError, "Login Retcode="+str(ret['retcode'])
             return
 
-        VFWebQQ = ret['result']['vfwebqq']
+        VFWebQQ = ret2['result']['vfwebqq']
         PSessionID = ret['result']['psessionid']
 
         logging.critical("QQ号：{0} 登陆成功, 用户名：{1}".format(ret['result']['uin'], tmpUserName))
@@ -394,7 +403,7 @@ class check_msg(threading.Thread):
     # 向服务器查询新消息
     def check(self):
 
-        html = HttpClient_Ist.Post('http://d.web2.qq.com/channel/poll2', {
+        html = HttpClient_Ist.Post('http://d1.web2.qq.com/channel/poll2', {
             'r': '{{"ptwebqq":"{1}","clientid":{2},"psessionid":"{0}","key":""}}'.format(PSessionID, PTWebQQ, ClientID)
         }, Referer)
         logging.info("Check html: " + str(html))
@@ -511,7 +520,7 @@ class group_thread(threading.Thread):
             logging.info("REPLY TOO FAST, ABANDON："+content)
             return False
         self.lastreplytime = time.time()
-        reqURL = "http://d.web2.qq.com/channel/send_qun_msg2"
+        reqURL = "http://d1.web2.qq.com/channel/send_qun_msg2"
         data = (
             ('r', '{{"group_uin":{0}, "face":564,"content":"[\\"{4}\\",[\\"font\\",{{\\"name\\":\\"Arial\\",\\"size\\":\\"10\\",\\"style\\":[0,0,0],\\"color\\":\\"000000\\"}}]]","clientid":"{1}","msg_id":{2},"psessionid":"{3}"}}'.format(self.guin, ClientID, msgId, PSessionID, str(content.replace("\\", "\\\\\\\\").replace("\n", "\\\\n").replace("\t", "\\\\t")).decode("utf-8"))),
             ('clientid', ClientID),
