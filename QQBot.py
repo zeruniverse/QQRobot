@@ -101,7 +101,7 @@ def msg_handler(msgObj):
         if msgType == 'message' or msgType == 'sess_message':  # 私聊 or 临时对话
             txt = combine_msg(msg['value']['content'])
             tuin = msg['value']['from_uin']
-            msg_id = msg['value']['msg_id2']
+            msg_id = msg['value']['msg_id']
             from_account = uin_to_account(tuin)
 
             # print "{0}:{1}".format(from_account, txt)
