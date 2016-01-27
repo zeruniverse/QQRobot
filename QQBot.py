@@ -368,8 +368,8 @@ class Login(HttpClient):
         ret = json.loads(html)
         if ret['retcode']!= 0:
             raise ValueError, "retcode error when getting group list: retcode="+ret['retcode']
-        for t in ret['result']['gnamelist']
-            GroupNameList[t["name"]]=t["gid"]
+        for t in ret['result']['gnamelist']:
+            GroupNameList[str(t["name"])]=t["gid"]
 
 class check_msg(threading.Thread):
     # try:
@@ -429,7 +429,8 @@ class check_msg(threading.Thread):
 
             if ret['retcode'] == 0:
                 # 信息分发
-                msg_handler(ret['result'])
+                if 'result' in ret:
+                    msg_handler(ret['result'])
                 E = 0
                 continue
 
@@ -745,8 +746,8 @@ if __name__ == "__main__":
         with open('groupfollow.txt','r') as f:
             for line in f:
                 tmp = line.strip('\n')
-                if tmp in GroupNameList:
-                    GroupWatchList += str(GroupNameList[tmp])
+                if str(tmp) in GroupNameList:
+                    GroupWatchList.append(str(GroupNameList[str(tmp)]))
                     logging.info("关注:"+str(tmp))
                 else:
                     logging.error("无法找到群："+str(tmp))
