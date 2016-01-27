@@ -745,7 +745,7 @@ if __name__ == "__main__":
     try:        
         with open('groupfollow.txt','r') as f:
             for line in f:
-                tmp = line.strip('\n')
+                tmp = line.strip('\n').strip('\r')
                 if str(tmp) in GroupNameList:
                     GroupWatchList.append(str(GroupNameList[str(tmp)]))
                     logging.info("关注:"+str(tmp))
