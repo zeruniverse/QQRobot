@@ -32,7 +32,7 @@ WINDOWS EXE 32位: [点击下载](https://github.com/zeruniverse/QQRobot/release
 
 ##如何使用  
 + 从http://www.tuling123.com/openapi/ 申请一个API KEY(免费，5000次/天)， 贴到```QQBot.py```的第34行 (测试KEY：c7c5abbc9ec9cad3a63bde71d17e3c2c)  
-+ 修改groupfollow.txt,将需要小黄鸡回复的群的群名写入(小黄鸡必须为群成员),每行一个群名，请不要打多余的空格。  
++ 修改groupfollow.txt,将需要小黄鸡回复的群的群名写入(小黄鸡必须为群成员),每行一个群名，请不要打多余的空格。（新版WEBQQ已移除获取群号的接口，输入中文群名请务必使用UTF-8编码）  
 + ```nohup python2 QQBot.py >qbot.log&```
 + ```ls```
 + 若出现v.png则用QQ安全中心扫描，否则继续```ls```  
