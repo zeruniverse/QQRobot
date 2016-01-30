@@ -433,6 +433,9 @@ class check_msg(threading.Thread):
                     msg_handler(ret['result'])
                 E = 0
                 continue
+            
+            # Other retcode e.g.: 103
+            E += 1
 
         logging.critical("轮询错误超过五次")
 
