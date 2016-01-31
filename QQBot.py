@@ -367,7 +367,7 @@ class Login(HttpClient):
             }, 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1')
         ret = json.loads(html)
         if ret['retcode']!= 0:
-            raise ValueError, "retcode error when getting group list: retcode="+ret['retcode']
+            raise ValueError, "retcode error when getting group list: retcode="+str(ret['retcode'])
         for t in ret['result']['gnamelist']:
             GroupNameList[str(t["name"])]=t["gid"]
 
