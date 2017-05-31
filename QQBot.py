@@ -32,7 +32,7 @@ SmartQQUrl = 'https://ui.ptlogin2.qq.com/cgi-bin/login?daid=164&target=self&styl
 VFWebQQ = ''
 AdminQQ = '0'
 MyUIN = ''
-tulingkey='#YOUR KEY HERE#'
+tulingkey='#TURING KEY'
 
 initTime = time.time()
 
@@ -83,7 +83,7 @@ def gethash(selfuin, ptwebqq):
     U[4]=N[2]
     U[5]=V[2]
     U[6]=N[3]
-    U[7]=V[3]  
+    U[7]=V[3]
     N=["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
     V=""
     for T in range(len(U)):
@@ -151,7 +151,7 @@ def msg_handler(msgObj):
                     if msgType == 'sess_message':
                         isSess = 1
                         service_type = msg['value']['service_type']
-                        myid = msg['value']['id'] 
+                        myid = msg['value']['id']
                         ts = time.time()
                         while ts < 1000000000000:
                             ts = ts * 10
@@ -285,7 +285,6 @@ class Login(HttpClient):
         logging.critical("正在获取登陆页面")
         self.Get('http://w.qq.com/')
         html = self.Get(SmartQQUrl,'http://w.qq.com/')
-
         logging.critical("正在获取appid")
         APPID = getReValue(html, r'<input type="hidden" name="aid" value="(\d+)" />', 'Get AppId Error', 1)
         logging.critical("正在获取login_sig")
@@ -298,17 +297,17 @@ class Login(HttpClient):
         MiBaoCss = getReValue(html, r'g_mibao_css\s*=\s*encodeURIComponent\s*\("(.*?)"\)', 'Get g_mibao_css Error', 1)
         logging.info('get g_mibao_css : %s', sign)
         StarTime = date_to_millis(datetime.datetime.utcnow())
-        QRSig = self.getCookie('qrsig')
-
         T = 0
         while True:
             T = T + 1
             self.Download('https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=M&s=5&d=72&v=4&t=0.0836106{1}4250{2}6653'.format(APPID,random.randint(0,9),random.randint(0,9)), self.VPath)
-            
+
             logging.info('[{0}] Get QRCode Picture Success.'.format(T))
-            
+
+            QRSig = self.getCookie('qrsig')
             while True:
-                html = self.Get('https://ssl.ptlogin2.qq.com/ptqrlogin?ptqrtoken={0}&webqq_type=10&remember_uin=1&login2qq=1&aid={1}&u1=http%3A%2F%2Fw.qq.com%2Fproxy.html%3Flogin2qq%3D1%26webqq_type%3D10&ptredirect=0&ptlang=2052&daid=164&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=0-0-{2}&mibao_css={3}&t=1&g=1&js_type=0&js_ver={4}&login_sig={5}&pt_randsalt=2'.format(getQRtoken(QRSig),APPID, date_to_millis(datetime.datetime.utcnow()) - StarTime, MiBaoCss, JsVer, sign), self.initUrl)
+                html = self.Get('https://ssl.ptlogin2.qq.com/ptqrlogin?ptqrtoken={0}&webqq_type=10&remember_uin=1&login2qq=1&aid={1}&u1=http%3A%2F%2Fw.qq.com%2Fproxy.html%3Flogin2qq%3D1%26webqq_type%3D10&ptredirect=0&ptlang=2052&daid=164&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=0-0-{2}&mibao_css={3}&t=1&g=1&js_type=0&js_ver={4}&login_sig={5}&pt_randsalt=2'.format(getQRtoken(QRSig),APPID, date_to_millis(datetime.datetime.utcnow()) - StarTime, MiBaoCss, JsVer, sign),
+                        SmartQQUrl)
                 # logging.info(html)
                 ret = html.split("'")
                 if ret[1] == '65' or ret[1] == '0':  # 65: QRCode 失效, 0: 验证成功, 66: 未失效, 67: 验证中
@@ -331,7 +330,6 @@ class Login(HttpClient):
         tmpUserName = ret[11]
 
         html = self.Get(ret[5])
-        print html
         url = getReValue(html, r' src="(.+?)"', 'Get mibao_res Url Error.', 0)
         if url != '':
             html = self.Get(url.replace('&amp;', '&'))
@@ -352,7 +350,7 @@ class Login(HttpClient):
                 html2 = self.Get("http://s.web2.qq.com/api/getvfwebqq?ptwebqq={0}&clientid={1}&psessionid={2}&t={3}".format(PTWebQQ, ClientID, PSessionID, get_ts()), 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1')
                 logging.info("getvfwebqq html:  " + str(html2))
                 ret2 = json.loads(html2)
-                LoginError = 0				
+                LoginError = 0
             except:
                 LoginError -= 1
                 logging.critical("登录失败，正在重试")
@@ -440,7 +438,7 @@ class check_msg(threading.Thread):
                     msg_handler(ret['result'])
                 E = 0
                 continue
-            
+
             # Other retcode e.g.: 103
             E += 1
 
@@ -465,7 +463,7 @@ class check_msg(threading.Thread):
 
 class pmchat_thread(threading.Thread):
 
-    
+
     # con = threading.Condition()
     # newIp = ''
 
@@ -521,7 +519,7 @@ class pmchat_thread(threading.Thread):
         except Exception, e:
             logging.error("ERROR:"+str(e))
         return False
-        
+
 
 
 class group_thread(threading.Thread):
@@ -576,7 +574,7 @@ class group_thread(threading.Thread):
         rsp = HttpClient_Ist.Post(reqURL, data, Referer)
         try:
             rspp = json.loads(rsp)
-            if rspp['errCode'] == 0:         
+            if rspp['errCode'] == 0:
                 logging.info("[Reply to group " + str(self.gid) + "]:" + str(content))
                 return True
         except:
@@ -615,7 +613,7 @@ class group_thread(threading.Thread):
                     return
                 if self.repeat(content):
                     return
-                
+
         else:
             logging.warning("message seq repeat detected.")
         self.lastseq = seq
@@ -636,7 +634,7 @@ class group_thread(threading.Thread):
                 logging.info("已复读：{" + str(content) + "}")
                 return True
         self.last1 = content
-        
+
         return False
 
     def follow(self, send_uin, content):
@@ -678,16 +676,16 @@ class group_thread(threading.Thread):
                 savefile.close()
         except Exception, e:
             logging.info("读取存档出错:"+str(e))
-    
+
     def callout(self, send_uin, content):
-        pattern = re.compile(r'^(?:!|！)(ai) (.+)') 
+        pattern = re.compile(r'^(?:!|！)(ai) (.+)')
         match = pattern.match(content)
         try:
             if match:
                 logging.info("get info from AI: "+str(match.group(2)).decode('UTF-8'))
                 usr = str(uin_to_account(send_uin))
                 paraf={ 'userid' : usr+'g', 'key' : tulingkey, 'info' : str(match.group(2)).decode('UTF-8')}
-                
+
                 info = HttpClient_Ist.Get('http://www.tuling123.com/openapi/api?'+urllib.urlencode(paraf))
                 logging.info("AI REPLY:"+str(info))
                 info = json.loads(info)
@@ -703,9 +701,9 @@ class group_thread(threading.Thread):
         except Exception, e:
             logging.error("ERROR"+str(e))
         return False
-        
+
     def aboutme(self, content):
-        pattern = re.compile(r'^(?:!|！)(about)') 
+        pattern = re.compile(r'^(?:!|！)(about)')
         match = pattern.match(content)
         try:
             if match:
@@ -716,9 +714,9 @@ class group_thread(threading.Thread):
         except Exception, e:
             logging.error("ERROR"+str(e))
         return False
-        
+
     def deleteall(self, content):
-        pattern = re.compile(r'^(?:!|！)(deleteall)') 
+        pattern = re.compile(r'^(?:!|！)(deleteall)')
         match = pattern.match(content)
         try:
             if match:
@@ -752,7 +750,7 @@ if __name__ == "__main__":
     t_check = check_msg()
     t_check.setDaemon(True)
     t_check.start()
-    try:        
+    try:
         with open('groupfollow.txt','r') as f:
             for line in f:
                 tmp = line.strip('\n').strip('\r')
@@ -763,6 +761,6 @@ if __name__ == "__main__":
                     logging.error("无法找到群："+str(tmp))
     except Exception, e:
         logging.error("读取组存档出错:"+str(e))
-            
-                
+
+
     t_check.join()
