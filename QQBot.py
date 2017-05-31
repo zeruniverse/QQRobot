@@ -28,7 +28,7 @@ GroupWatchList = []
 GroupNameList = {}
 PSessionID = ''
 Referer = 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2'
-SmartQQUrl = 'http://w.qq.com/login.html'
+SmartQQUrl = 'https://ui.ptlogin2.qq.com/cgi-bin/login?daid=164&target=self&style=16&mibao_css=m_webqq&appid=501004106&enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fw.qq.com%2Fproxy.html&f_url=loginerroralert&strong_login=1&login_state=10&t=20131024001'
 VFWebQQ = ''
 AdminQQ = '0'
 MyUIN = ''
@@ -56,6 +56,12 @@ def get_ts():
         ts = ts * 10
     ts = int(ts)
     return ts
+
+def getQRtoken(qrsig):
+    e = 0
+    for i in qrsig:
+        e += (e << 5) + ord(i)
+    return 2147483647 & e;
 
 #Encryption Algorithm Used By QQ
 def gethash(selfuin, ptwebqq):
@@ -277,8 +283,8 @@ class Login(HttpClient):
         self.VPath = vpath  # QRCode保存路径
         AdminQQ = int(qq)
         logging.critical("正在获取登陆页面")
-        self.initUrl = getReValue(self.Get(SmartQQUrl), r'\.src = "(.+?)"', 'Get Login Url Error.', 1)
-        html = self.Get(self.initUrl + '0')
+        self.Get('http://w.qq.com/')
+        html = self.Get(SmartQQUrl,'http://w.qq.com/')
 
         logging.critical("正在获取appid")
         APPID = getReValue(html, r'<input type="hidden" name="aid" value="(\d+)" />', 'Get AppId Error', 1)
@@ -292,17 +298,17 @@ class Login(HttpClient):
         MiBaoCss = getReValue(html, r'g_mibao_css\s*=\s*encodeURIComponent\s*\("(.*?)"\)', 'Get g_mibao_css Error', 1)
         logging.info('get g_mibao_css : %s', sign)
         StarTime = date_to_millis(datetime.datetime.utcnow())
+        QRSig = self.getCookie('qrsig')
 
         T = 0
         while True:
             T = T + 1
-            self.Download('https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=L&s=8&d=72&v=4'.format(APPID), self.VPath)
+            self.Download('https://ssl.ptlogin2.qq.com/ptqrshow?appid={0}&e=0&l=M&s=5&d=72&v=4&t=0.0836106{1}4250{2}6653'.format(APPID,random.randint(0,9),random.randint(0,9)), self.VPath)
             
             logging.info('[{0}] Get QRCode Picture Success.'.format(T))
             
-
             while True:
-                html = self.Get('https://ssl.ptlogin2.qq.com/ptqrlogin?webqq_type=10&remember_uin=1&login2qq=1&aid={0}&u1=http%3A%2F%2Fw.qq.com%2Fproxy.html%3Flogin2qq%3D1%26webqq_type%3D10&ptredirect=0&ptlang=2052&daid=164&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=0-0-{1}&mibao_css={2}&t=undefined&g=1&js_type=0&js_ver={3}&login_sig={4}'.format(APPID, date_to_millis(datetime.datetime.utcnow()) - StarTime, MiBaoCss, JsVer, sign), self.initUrl)
+                html = self.Get('https://ssl.ptlogin2.qq.com/ptqrlogin?ptqrtoken={0}&webqq_type=10&remember_uin=1&login2qq=1&aid={1}&u1=http%3A%2F%2Fw.qq.com%2Fproxy.html%3Flogin2qq%3D1%26webqq_type%3D10&ptredirect=0&ptlang=2052&daid=164&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=0-0-{2}&mibao_css={3}&t=1&g=1&js_type=0&js_ver={4}&login_sig={5}&pt_randsalt=2'.format(getQRtoken(QRSig),APPID, date_to_millis(datetime.datetime.utcnow()) - StarTime, MiBaoCss, JsVer, sign), self.initUrl)
                 # logging.info(html)
                 ret = html.split("'")
                 if ret[1] == '65' or ret[1] == '0':  # 65: QRCode 失效, 0: 验证成功, 66: 未失效, 67: 验证中
@@ -325,6 +331,7 @@ class Login(HttpClient):
         tmpUserName = ret[11]
 
         html = self.Get(ret[5])
+        print html
         url = getReValue(html, r' src="(.+?)"', 'Get mibao_res Url Error.', 0)
         if url != '':
             html = self.Get(url.replace('&amp;', '&'))
